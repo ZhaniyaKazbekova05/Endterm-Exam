@@ -22,13 +22,6 @@ Three medical supply centers distribute resources to four hospitals.
 Each route has a transportation cost per unit.
 We must decide how many units to send from each supply center to each hospital to minimize total cost.
 
-Supply Centers / Hospitals	H1	H2	H3	H4
-S1 (Astana)	4	6	8	13
-S2 (Almaty)	5	11	9	7
-S3 (Shymkent)	9	8	6	5
-
-Supply: [120, 80, 100]
-Demand: [60, 40, 90, 110]
 
 ⚙️ Methodology
 
@@ -60,29 +53,7 @@ vogel_method.py
 🚀 Run the program
 python3 vogel_method.py
 
-✅ Expected Output
-Allocation plan:
-[[60 40 20  0]
- [ 0  0  0 80]
- [ 0  0 70 30]]
-Total cost: 1770.0
-Is optimal?: True
 
-🧾 Results Summary
-
-Total transportation cost: 1770
-
-All hospital demands are fully satisfied.
-
-Optimal routes:
-
-S1 → H1, H2
-
-S2 → H4
-
-S3 → H3, H4
-
-This result confirms that Vogel’s method provides an optimal or near-optimal distribution with minimal total cost.
 
 🧠 Concepts Covered
 
