@@ -1,112 +1,112 @@
-# 🚑 Optimal Placement of Ambulance Stations (P-Center Problem)
+🏥 Distribution of Medical Resources Using Vogel’s Approximation Method (VAM)
+📘 Project Overview
 
-## 🎯 Project Goal
-This project aims to determine the **optimal locations for ambulance stations** in a city to **minimize the maximum (worst-case) response distance** between any demand zone and its nearest open station.
+This project demonstrates how to optimize the distribution of medical resources from supply centers to hospitals using Linear Programming concepts.
+The Vogel’s Approximation Method (VAM) is applied to find an initial feasible solution for the Transportation Problem, followed by an optimality check using the MODI method.
 
-This is formulated as a **P-Center optimization problem**, a classical linear programming model widely applied in emergency service planning, logistics, and facility location.
+The goal is to minimize the total transportation cost while fully meeting the demand of hospitals and not exceeding available supplies.
 
----
+🎯 Objectives
 
-## 🧩 Model Formulation
+Apply linear programming to a real-world logistics scenario.
 
-**Decision Variables**
-- `y_j = 1` if an ambulance station is opened at location *j*  
-- `x_ij = 1` if demand zone *i* is served by station *j*  
-- `R` = maximum service distance (to minimize)
+Implement the Vogel’s Approximation Method in Python.
 
-**Objective Function**
-\[
-\min R
-\]
+Verify optimality using a simplified MODI (Modified Distribution) check.
 
-**Constraints**
-1. Every demand zone is assigned to one station  
-   \(\sum_{j \in J} x_{ij} = 1\)
-2. Assignment only if a station is open  
-   \(x_{ij} \le y_j\)
-3. Exactly *p* stations are opened  
-   \(\sum_{j \in J} y_j = p\)
-4. Distance limitation  
-   \(\sum_{j \in J} d_{ij}x_{ij} \le R\)
-5. \(x_{ij}, y_j \in \{0,1\}, R \ge 0\)
+Visualize and analyze the allocation plan and total cost.
 
----
+🧩 Problem Description
 
-## 💻 Implementation
+Three medical supply centers distribute resources to four hospitals.
+Each route has a transportation cost per unit.
+We must decide how many units to send from each supply center to each hospital to minimize total cost.
 
-Two complementary approaches were implemented:
+Supply Centers / Hospitals	H1	H2	H3	H4
+S1 (Astana)	4	6	8	13
+S2 (Almaty)	5	11	9	7
+S3 (Shymkent)	9	8	6	5
 
-### 1. **Brute-Force Algorithm (Custom Implementation)**
-- Enumerates all possible combinations of *p* stations.
-- Assigns each demand zone to the nearest open station.
-- Calculates and compares the maximum response distances.
-- Useful for validation on small datasets.
+Supply: [120, 80, 100]
+Demand: [60, 40, 90, 110]
 
-### 2. **MILP Model using PuLP**
-- Exact linear formulation solved via the built-in CBC solver.
-- Confirms correctness of the mathematical model and logic.
+⚙️ Methodology
 
----
+Vogel’s Approximation Method (VAM)
 
-## 📊 Results
+Calculates penalties based on the difference between two smallest costs in each row and column.
 
-| Method | Optimal Stations | Max Distance R (km) |
-|---------|-----------------|--------------------:|
-| Manual Enumeration | {B, D} | 5.00 |
-| Brute Force (Python) | {B, D} | 5.00 |
-| PuLP (MILP Solver) | {B, D} | 5.00 |
+Chooses the row/column with the highest penalty.
 
-✅ All methods produced identical results — confirming the correctness of the model and code.
+Allocates to the cell with the minimum cost within that row/column.
 
----
+Repeats until all supplies and demands are satisfied.
 
-## ⚙️ How to Run (Local Setup)
+Optimality Check (MODI)
 
-1. Create a virtual environment (recommended):
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-Install dependencies:
+Calculates potentials u and v for occupied cells.
 
-pip install pulp
+Computes reduced costs Δ = c - (u + v).
 
+If all Δ ≥ 0 → the solution is optimal.
 
-Run the optimization script:
+💻 Implementation
 
-python src/milp_p_center_pulp.py
+The project is implemented in Python (NumPy).
 
+🧠 Main Script
+vogel_method.py
 
-View the results in the terminal:
+🚀 Run the program
+python3 vogel_method.py
 
-Optimal stations: ['B', 'D']
-Maximum distance R = 5.0
+✅ Expected Output
+Allocation plan:
+[[60 40 20  0]
+ [ 0  0  0 80]
+ [ 0  0 70 30]]
+Total cost: 1770.0
+Is optimal?: True
 
-📈 Sensitivity Analysis
-Number of Stations (p)	Maximum Distance R (km)	Change (%)
-1	7.21	—
-2	5.00	↓ 30.7 %
+🧾 Results Summary
 
-➡ Increasing the number of stations significantly reduces the worst-case response distance.
+Total transportation cost: 1770
 
-🧠 Insights
+All hospital demands are fully satisfied.
 
-The P-Center model helps minimize the maximum emergency response time.
+Optimal routes:
 
-Even adding one additional station greatly improves overall city coverage.
+S1 → H1, H2
 
-Verified using three independent methods — all give identical results.
+S2 → H4
 
-The approach can be applied to medical, fire, or logistics networks.
+S3 → H3, H4
 
-📚 References
+This result confirms that Vogel’s method provides an optimal or near-optimal distribution with minimal total cost.
 
-Daskin, M. S. (2013). Network and Discrete Location: Models, Algorithms, and Applications. John Wiley & Sons.
+🧠 Concepts Covered
 
-ReVelle, C. S., & Swain, R. W. (1970). Central facilities location problem. Geographical Analysis, 2(1), 30–42.
+Linear Programming
+
+Transportation Problem
+
+Vogel’s Approximation Method (VAM)
+
+MODI Optimality Check
+
+Python implementation using NumPy
+
+🧩 Future Improvements
+
+Add graphical visualization of routes and cost heatmaps.
+
+Integrate real data (distances, demand, supply) from healthcare logistics.
+
+Include time and risk constraints for multi-objective optimization.
+
+Compare with Simplex or Scipy linprog solver results.
 
 👩‍💻 Author
 
 Kazbekova Zhaniya
-Astana IT University — Linear Programming Endterm Project
-Academic Supervisor: Karashbaeve Zhanat
-Year: 2025
+Astana IT University

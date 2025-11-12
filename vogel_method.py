@@ -18,10 +18,35 @@ def vogel_method(costs, supply, demand):
 
     while sum(supply) > 0 and sum(demand) > 0:
         # calculate penalties for rows and columns
-        row_pen = [np.partition([costs[i, j] for j in range(n) if demand[j] > 0], 1)[:2].ptp()
-                   if supply[i] > 0 else -1 for i in range(m)]
-        col_pen = [np.partition([costs[i, j] for i in range(m) if supply[i] > 0], 1)[:2].ptp()
-                   if demand[j] > 0 else -1 for j in range(n)]
+        row_pen, col_pen = [], []
+
+        for i in range(m):
+            if supply[i] > 0:
+                active_costs = [costs[i, j] for j in range(n) if demand[j] > 0]
+                if len(active_costs) > 1:
+                    s = sorted(active_costs)
+                    pen = s[1] - s[0]
+                elif len(active_costs) == 1:
+                    pen = active_costs[0]
+                else:
+                    pen = -1
+            else:
+                pen = -1
+            row_pen.append(pen)
+
+        for j in range(n):
+            if demand[j] > 0:
+                active_costs = [costs[i, j] for i in range(m) if supply[i] > 0]
+                if len(active_costs) > 1:
+                    s = sorted(active_costs)
+                    pen = s[1] - s[0]
+                elif len(active_costs) == 1:
+                    pen = active_costs[0]
+                else:
+                    pen = -1
+            else:
+                pen = -1
+            col_pen.append(pen)
 
         # find largest penalty
         if max(row_pen) >= max(col_pen):
@@ -40,11 +65,11 @@ def vogel_method(costs, supply, demand):
     total_cost = (alloc * costs).sum()
     return alloc, total_cost
 
-# --- Simple Optimality Check ---
+# --- Simple optimality check ---
 def check_optimality(costs, alloc):
     m, n = costs.shape
     u, v = [None]*m, [None]*n
-    u[0] = 0  # start potential
+    u[0] = 0
     updated = True
 
     # find potentials
@@ -58,7 +83,7 @@ def check_optimality(costs, alloc):
                     elif v[j] is not None and u[i] is None:
                         u[i] = costs[i, j] - v[j]; updated = True
 
-    # compute reduced costs
+    # check reduced costs
     for i in range(m):
         for j in range(n):
             if alloc[i, j] == 0:
